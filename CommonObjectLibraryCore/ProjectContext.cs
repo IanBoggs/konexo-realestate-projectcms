@@ -18,6 +18,7 @@ namespace CommonObjectLibraryCore
         {
             modelBuilder.Entity<CaseEntity>().HasKey(ce => new {ce.CaseId,ce.EntityId});
 
+
             AddSeedData(ref modelBuilder);
 
 
@@ -25,10 +26,10 @@ namespace CommonObjectLibraryCore
 
         private void AddSeedData(ref ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EntityType>().HasData(
-                new EntityType {EntityTypeId = 1, EntityTypeName="Borrower"},
-                new EntityType {EntityTypeId = 2, EntityTypeName="Solicitor"},
-                new EntityType {EntityTypeId = 3, EntityTypeName="Client"}
+            modelBuilder.Entity<EntityRole>().HasData(
+                new EntityRole {EntityRoleId = 1, EntityRoleName="Borrower"},
+                new EntityRole {EntityRoleId = 2, EntityRoleName="Solicitor"},
+                new EntityRole {EntityRoleId = 3, EntityRoleName="Client"}
                             );
 
 
@@ -37,6 +38,8 @@ namespace CommonObjectLibraryCore
         public DbSet<Case> Cases {get; set;}
         public DbSet<Entity> Entities {get; set;}
         public DbSet<CaseEntity> CaseEntities {get; set;}
-        public DbSet<EntityType> EntityTypes {get; set;}
+        public DbSet<EntityRole> EntityRoles {get; set;}
+
+        public DbSet<CaseEntityProperties> CaseEntityProperties {get; set;}
     }
 }
