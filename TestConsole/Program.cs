@@ -2,6 +2,8 @@
 using Repositories;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using CommonObjectLibraryCore;
+using System.Collections.Generic;
 
 namespace TestConsole
 {
@@ -9,18 +11,32 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var db = new ProjectsRepository();
+            Console.WriteLine ("Please enter the new case reference");
+            var caseRef = Console.ReadLine();
+            Console.WriteLine ("Enter The Client Name");
+            var clientName = Console.ReadLine();
+            using (var con = new ProjectContext())
+            {
+                var clientType = con.EntityTypes.First(t => t.EntityTypeName == "Client");
 
-                Console.WriteLine (db.TestProperty);
-                var con = db.ProjectContext;
-                var types =con.EntityTypes;
-                foreach (var type in types)
+                var client = con.Entities.Where(c => c.CompanyName == clientName).FirstOrDefault();
+                if (client == null)
                 {
-                    Console.WriteLine(type.EntityTypeName);
+                    client = new Entity {CompanyName = clientName, EntityType = clientType};
+                    con.Add<Entity>(client);
                 }
-                Console.WriteLine(types.Count());
 
-            Console.WriteLine("Complete!");
+                var newCase = new Case {CaseReference = caseRef };
+                var caseclient = new CaseEntity();
+                caseclient.Case = newCase;
+                caseclient.Entity = client;
+
+                con.CaseEntities.Add(caseclient);
+
+                con.Add<Case>(newCase);
+                con.SaveChanges();
+            }
+            Console.WriteLine($"Complete");
         }
     }
 }
