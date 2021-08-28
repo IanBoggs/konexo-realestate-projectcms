@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TestMVC.Models;
+using CommonObjectLibraryCore;
 
 namespace TestMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ProjectContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ProjectContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
+            var test = _context.Cases.Count();
             return View();
         }
 
