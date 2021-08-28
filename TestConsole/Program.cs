@@ -18,12 +18,23 @@ namespace TestConsole
             var clientRef = Console.ReadLine();
             using (var con = new ProjectContext())
             {
-                var clientRole = con.EntityRoles.First(t => t.EntityRoleName == "Client");
 
-                var client = con.Entities.Where(c => c.CompanyName == clientName).FirstOrDefault();
+                var caseHandlerRole = con.EntityRoles.First(t => t.EntityRoleName == "Case Handler");
+
+                var clientRole = con.EntityRoles.First(t => t.EntityRoleName == "Client");
+                var dataPointType = con.DataPointTypes.First(p => p.DataPointName == "Reference");
+
+                var caseHandler = con.People.Where(p => p.Surname == "Boggs").FirstOrDefault();
+                if (caseHandler == null)
+                {
+                    caseHandler = new IndividualEntity { Surname = "Boggs", FirstNames = "Ian" };
+                    con.Add<Entity>(caseHandler);
+                }
+
+                var client = con.Companies.Where(c => c.CompanyName == clientName).FirstOrDefault();
                 if (client == null)
                 {
-                    client = new Entity { CompanyName = clientName };
+                    client = new CompanyEntity { CompanyName = clientName };
                     con.Add<Entity>(client);
                 }
 
@@ -32,15 +43,25 @@ namespace TestConsole
 
                 var caseclient = new CaseEntity();
 
-                var caseClientDetails = new CaseEntityProperties();
-                caseClientDetails.Reference = clientRef;
+                var dataPoint = new CaseEntityDataPoint();
+                dataPoint.DataPointType = dataPointType;
+                dataPoint.DataPointValue = clientRef;
+
 
                 caseclient.Case = newCase;
                 caseclient.Entity = client;
-                caseclient.CaseEntityProperties = caseClientDetails;
+                caseclient.CaseEntityDataPointList = new List<CaseEntityDataPoint>() { dataPoint };
+
                 caseclient.EntityRole = clientRole;
 
                 con.CaseEntities.Add(caseclient);
+
+                var handlerCase = new CaseEntity();
+                handlerCase.Case = newCase;
+                handlerCase.Entity = caseHandler;
+                handlerCase.EntityRole = caseHandlerRole;
+
+                con.CaseEntities.Add(handlerCase);
 
                 con.Add<Case>(newCase);
                 con.SaveChanges();

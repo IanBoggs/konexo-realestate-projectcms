@@ -16,7 +16,7 @@ namespace CommonObjectLibraryCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CaseEntity>().HasKey(ce => new {ce.CaseId,ce.EntityId});
+            modelBuilder.Entity<CaseEntity>().HasKey(ce => new { ce.CaseId, ce.EntityId });
 
 
             AddSeedData(ref modelBuilder);
@@ -27,19 +27,27 @@ namespace CommonObjectLibraryCore
         private void AddSeedData(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EntityRole>().HasData(
-                new EntityRole {EntityRoleId = 1, EntityRoleName="Borrower"},
-                new EntityRole {EntityRoleId = 2, EntityRoleName="Solicitor"},
-                new EntityRole {EntityRoleId = 3, EntityRoleName="Client"}
+                new EntityRole { EntityRoleId = 1, EntityRoleName = "Borrower" },
+                new EntityRole { EntityRoleId = 2, EntityRoleName = "Solicitor" },
+                new EntityRole { EntityRoleId = 3, EntityRoleName = "Client" },
+                new EntityRole { EntityRoleId = 4, EntityRoleName = "Case Handler" }
                             );
-
+            modelBuilder.Entity<DataPointType>().HasData(
+                new DataPointType { DataPointTypeId = 1, DataPointName = "Reference" }
+            );
 
         }
 
-        public DbSet<Case> Cases {get; set;}
-        public DbSet<Entity> Entities {get; set;}
-        public DbSet<CaseEntity> CaseEntities {get; set;}
-        public DbSet<EntityRole> EntityRoles {get; set;}
+        public DbSet<Case> Cases { get; set; }
+        public DbSet<Entity> Entities { get; set; }
+        public DbSet<CaseEntity> CaseEntities { get; set; }
+        public DbSet<EntityRole> EntityRoles { get; set; }
 
-        public DbSet<CaseEntityProperties> CaseEntityProperties {get; set;}
+        public DbSet<PostalAddress> PostalAddresses { get; set; }
+        public DbSet<CaseEntityDataPoint> CaseEntityDataPoints { get; set; }
+        public DbSet<DataPointType> DataPointTypes { get; set; }
+        public DbSet<IndividualEntity> People { get; set; }
+        public DbSet<CompanyEntity> Companies { get; set; }
+
     }
 }

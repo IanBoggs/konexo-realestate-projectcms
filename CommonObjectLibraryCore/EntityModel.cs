@@ -6,24 +6,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommonObjectLibraryCore
 {
-    public class Entity
+    /// <summary>
+    /// A entity in the system, and its constant properties
+    /// </summary>
+    public class Entity : IEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int EntityId { get; set; }
+        public Guid EntityId { get; set; }
+        public PostalAddress PrincipalAddress { get; set; }
+
+
+
+    }
+
+    public class CompanyEntity : Entity
+    {
         public string CompanyName { get; set; }
         public List<CaseEntity> CaseEntities { get; set; }
-
-
     }
 
-    public class CaseEntityProperties
+    public class IndividualEntity : Entity
     {
-        public int CaseEntityPropertiesId { get; set; }
-        public string Reference { get; set; }
+        public string FirstNames { get; set; }
+        public string Surname { get; set; }
+        public List<CaseEntity> CaseEntities { get; set; }
 
     }
+
+
+    /// <summary>
+    /// Mapping between cases and their entities
+    /// </summary>
     public class CaseEntity
     {
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CaseEntityId { get; set; }
 
@@ -31,14 +47,14 @@ namespace CommonObjectLibraryCore
         public int CaseId { get; set; }
         public Case Case { get; set; }
 
-        public int EntityId { get; set; }
+        public Guid EntityId { get; set; }
         public Entity Entity { get; set; }
 
         public int EntityRoleId { get; set; }
         public EntityRole EntityRole { get; set; }
 
-        public int CaseEntityPropertiesId { get; set; }
-        public CaseEntityProperties CaseEntityProperties { get; set; }
+        public List<CaseEntityDataPoint> CaseEntityDataPointList { get; set; }
+
     }
 
 
