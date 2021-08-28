@@ -1,4 +1,6 @@
 ﻿using System;
+using CommonObjectLibraryCore;
+using System.Collections.Generic;
 
 namespace TestMVC.Models
 {
@@ -8,4 +10,6 @@ namespace TestMVC.Models
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
+
+
 }

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommonObjectLibraryCore
 {
+
+
     [Index(nameof(CaseReference), IsUnique = true)]
     public class Case
     {

@@ -1,0 +1,16 @@
+@using CommonObjectLibraryCore
+@model IEnumerable<Case>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome To Projects Case Management System</h1>
+    <p>There are a total of @Model.Count() cases in the system</p>
+
+    @foreach (var item in Model)
+
+    {
+        <li>@item.CaseReference</li>
+    }
+</div>
