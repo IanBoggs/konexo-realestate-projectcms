@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TestMVC.Models;
 using CommonObjectLibraryCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace TestMVC.Controllers
 {
@@ -22,7 +23,9 @@ namespace TestMVC.Controllers
 
         public IActionResult Index()
         {
-            var allCases = _context.Cases.ToList();
+            var allCases = _context.Cases
+                .Include(c => c.CaseEntities)
+                .ToList();
 
             return View(allCases);
         }

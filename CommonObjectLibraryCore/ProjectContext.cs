@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Proxies;
 using System.Linq;
 
 namespace CommonObjectLibraryCore
@@ -10,7 +11,7 @@ namespace CommonObjectLibraryCore
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=tcp:arda.database.windows.net,1433;Initial Catalog=radagast;Persist Security Info=False;User ID=boggsy;Password=Pa55w0rdPa55w0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=tcp:arda.database.windows.net,1433;Initial Catalog=radagast;Persist Security Info=False;User ID=boggsy;Password=Pa55w0rdPa55w0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
         }
 

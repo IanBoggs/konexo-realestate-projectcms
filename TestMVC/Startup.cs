@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CommonObjectLibraryCore;
 
+
 namespace TestMVC
 {
     public class Startup

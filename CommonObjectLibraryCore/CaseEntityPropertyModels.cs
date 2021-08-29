@@ -12,7 +12,7 @@ namespace CommonObjectLibraryCore
     {
         public int CaseEntityDataPointId { get; set; }
         public int DataPointTypeId { get; set; }
-        public DataPointType DataPointType { get; set; }
+        public virtual DataPointType DataPointType { get; set; }
         public string DataPointValue { get; set; }
     }
 

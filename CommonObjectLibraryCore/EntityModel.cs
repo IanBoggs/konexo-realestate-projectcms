@@ -13,7 +13,7 @@ namespace CommonObjectLibraryCore
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid EntityId { get; set; }
-        public PostalAddress PrincipalAddress { get; set; }
+        public virtual PostalAddress PrincipalAddress { get; set; }
 
 
 
@@ -21,15 +21,30 @@ namespace CommonObjectLibraryCore
 
     public class CompanyEntity : Entity
     {
+
         public string CompanyName { get; set; }
-        public List<CaseEntity> CaseEntities { get; set; }
+        public virtual List<CaseEntity> CaseEntities { get; set; }
     }
 
     public class IndividualEntity : Entity
     {
+        [NotMapped]
+        public string FullName
+        {
+            get
+            {
+                var output = string.Empty;
+                if (!string.IsNullOrEmpty(FirstNames))
+                    output += FirstNames;
+                if (!string.IsNullOrEmpty(Surname))
+                    output += $" {Surname}";
+                return output.Trim();
+            }
+        }
+
         public string FirstNames { get; set; }
         public string Surname { get; set; }
-        public List<CaseEntity> CaseEntities { get; set; }
+        public virtual List<CaseEntity> CaseEntities { get; set; }
 
     }
 
@@ -45,15 +60,15 @@ namespace CommonObjectLibraryCore
 
 
         public int CaseId { get; set; }
-        public Case Case { get; set; }
+        public virtual Case Case { get; set; }
 
         public Guid EntityId { get; set; }
-        public Entity Entity { get; set; }
+        public virtual Entity Entity { get; set; }
 
         public int EntityRoleId { get; set; }
-        public EntityRole EntityRole { get; set; }
+        public virtual EntityRole EntityRole { get; set; }
 
-        public List<CaseEntityDataPoint> CaseEntityDataPointList { get; set; }
+        public virtual List<CaseEntityDataPoint> CaseEntityDataPointList { get; set; }
 
     }
 
