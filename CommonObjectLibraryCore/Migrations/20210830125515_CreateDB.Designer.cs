@@ -4,14 +4,16 @@ using CommonObjectLibraryCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CommonObjectLibraryCore.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20210830125515_CreateDB")]
+    partial class CreateDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +37,6 @@ namespace CommonObjectLibraryCore.Migrations
 
                     b.Property<Guid?>("ClientEntityId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ClientReference")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CurrentStatusCaseStatusId")
                         .HasColumnType("int");
@@ -168,7 +167,6 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ClientName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LegalClientName")

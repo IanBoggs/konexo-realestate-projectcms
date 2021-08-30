@@ -1,0 +1,16 @@
+@using CommonObjectLibraryCore
+@model Case
+@{
+    ViewData["Title"] = $"Case Summary - {@Model.CaseReference}";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Case Summary For @Model.CaseReference</h1>
+    <p>Here is the case summary for this case</p>
+
+
+    <li>@Html.DisplayNameFor(model => model.CaseReference) - @Model.CaseReference</li>
+    <li>@Model.Client.ClientName</li>
+    <li>@Model.CaseHandler.FullName</li>
+
+</div>

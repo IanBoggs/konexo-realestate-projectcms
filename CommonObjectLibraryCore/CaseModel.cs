@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
@@ -15,18 +16,16 @@ namespace CommonObjectLibraryCore
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CaseId { get; set; }
         [Required]
+        [DisplayName("Case Reference")]
         public string CaseReference { get; set; }
+        [Required]
+        public virtual CaseStatus CurrentStatus { get; set; }
+        public string ClientReference { get; set; }
+        [Required]
+        public virtual ClientEntity Client { get; set; }
+        public virtual UserEntity CaseHandler { get; set; }
         public virtual List<CaseEntity> CaseEntities { get; set; }
-        [NotMapped]
-        public string ClientName
-        {
-            get
-            {
 
-                CompanyEntity clientEntity = (CompanyEntity)this.CaseEntities.FirstOrDefault(e => e.EntityRole.EntityRoleName == "Client").Entity;
-                return string.IsNullOrEmpty(clientEntity.CompanyName) ? "No Client" : clientEntity.CompanyName;
-            }
-        }
 
         public string GetEntityNameByRole(string roleName)
         {

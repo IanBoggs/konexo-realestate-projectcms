@@ -11,7 +11,8 @@
     @foreach (var item in Model)
 
     {
-        <li>@item.CaseReference - @item.ClientName - @item.GetEntityNameByRole("Case Handler")
+        <li><a asp-controller="CaseSummary" asp-action="Index" asp-route-id="@item.CaseId">@item.CaseReference</a> -
+            @item.Client.ClientName - @item.CaseHandler.FullName
         </li>
     }
 </div>

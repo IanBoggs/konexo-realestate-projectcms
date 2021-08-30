@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommonObjectLibraryCore
 {
+
+
+
     /// <summary>
     /// A entity in the system, and its constant properties
     /// </summary>
@@ -18,6 +21,7 @@ namespace CommonObjectLibraryCore
 
 
     }
+
 
     public class CompanyEntity : Entity
     {

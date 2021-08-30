@@ -29,12 +29,23 @@ namespace CommonObjectLibraryCore
         {
             modelBuilder.Entity<EntityRole>().HasData(
                 new EntityRole { EntityRoleId = 1, EntityRoleName = "Borrower" },
-                new EntityRole { EntityRoleId = 2, EntityRoleName = "Solicitor" },
-                new EntityRole { EntityRoleId = 3, EntityRoleName = "Client" },
-                new EntityRole { EntityRoleId = 4, EntityRoleName = "Case Handler" }
+                new EntityRole { EntityRoleId = 2, EntityRoleName = "Solicitor" }
                             );
             modelBuilder.Entity<DataPointType>().HasData(
                 new DataPointType { DataPointTypeId = 1, DataPointName = "Reference" }
+            );
+
+            modelBuilder.Entity<CaseStatus>().HasData(
+                new CaseStatus { CaseStatusId = 1, CaseStatusName = "In Progress" },
+                new CaseStatus { CaseStatusId = 2, CaseStatusName = "Aborted" },
+                new CaseStatus { CaseStatusId = 3, CaseStatusName = "Completed" },
+                new CaseStatus { CaseStatusId = 4, CaseStatusName = "PreCompletion" },
+                new CaseStatus { CaseStatusId = 5, CaseStatusName = "PostCompletion" }
+            );
+
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity { UserEntityId = 1, FullName = "Ian Boggs" },
+                new UserEntity { UserEntityId = 2, FullName = "Sarah Jenkins" }
             );
 
         }
@@ -49,6 +60,9 @@ namespace CommonObjectLibraryCore
         public DbSet<DataPointType> DataPointTypes { get; set; }
         public DbSet<IndividualEntity> People { get; set; }
         public DbSet<CompanyEntity> Companies { get; set; }
+        public DbSet<ClientEntity> Clients { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<CaseStatus> CaseStatusList { get; set; }
 
     }
 }

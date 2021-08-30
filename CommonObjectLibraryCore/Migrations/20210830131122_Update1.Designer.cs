@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommonObjectLibraryCore.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20210828161704_CreateDB")]
-    partial class CreateDB
+    [Migration("20210830131122_Update1")]
+    partial class Update1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,14 +28,32 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("CaseHandlerUserEntityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CaseReference")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<Guid?>("ClientEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ClientReference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CurrentStatusCaseStatusId")
+                        .HasColumnType("int");
+
                     b.HasKey("CaseId");
+
+                    b.HasIndex("CaseHandlerUserEntityId");
 
                     b.HasIndex("CaseReference")
                         .IsUnique();
+
+                    b.HasIndex("ClientEntityId");
+
+                    b.HasIndex("CurrentStatusCaseStatusId");
 
                     b.ToTable("Cases");
                 });
@@ -101,6 +119,77 @@ namespace CommonObjectLibraryCore.Migrations
                     b.HasIndex("CaseEntityCaseId", "CaseEntityEntityId");
 
                     b.ToTable("CaseEntityDataPoints");
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.CaseStatus", b =>
+                {
+                    b.Property<int>("CaseStatusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CaseStatusName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CaseStatusId");
+
+                    b.ToTable("CasesStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            CaseStatusId = 1,
+                            CaseStatusName = "In Progress"
+                        },
+                        new
+                        {
+                            CaseStatusId = 2,
+                            CaseStatusName = "Aborted"
+                        },
+                        new
+                        {
+                            CaseStatusId = 3,
+                            CaseStatusName = "Completed"
+                        },
+                        new
+                        {
+                            CaseStatusId = 4,
+                            CaseStatusName = "PreCompletion"
+                        },
+                        new
+                        {
+                            CaseStatusId = 5,
+                            CaseStatusName = "PostCompletion"
+                        });
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.ClientEntity", b =>
+                {
+                    b.Property<Guid>("ClientEntityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LegalClientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PrincipalAddressPostalAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SOSPrefixCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortClientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ClientEntityId");
+
+                    b.HasIndex("PrincipalAddressPostalAddressId");
+
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("CommonObjectLibraryCore.DataPointType", b =>
@@ -175,16 +264,6 @@ namespace CommonObjectLibraryCore.Migrations
                         {
                             EntityRoleId = 2,
                             EntityRoleName = "Solicitor"
-                        },
-                        new
-                        {
-                            EntityRoleId = 3,
-                            EntityRoleName = "Client"
-                        },
-                        new
-                        {
-                            EntityRoleId = 4,
-                            EntityRoleName = "Case Handler"
                         });
                 });
 
@@ -216,6 +295,33 @@ namespace CommonObjectLibraryCore.Migrations
                     b.ToTable("PostalAddresses");
                 });
 
+            modelBuilder.Entity("CommonObjectLibraryCore.UserEntity", b =>
+                {
+                    b.Property<int>("UserEntityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserEntityId");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserEntityId = 1,
+                            FullName = "Ian Boggs"
+                        },
+                        new
+                        {
+                            UserEntityId = 2,
+                            FullName = "Sarah Jenkins"
+                        });
+                });
+
             modelBuilder.Entity("CommonObjectLibraryCore.CompanyEntity", b =>
                 {
                     b.HasBaseType("CommonObjectLibraryCore.Entity");
@@ -237,6 +343,27 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("IndividualEntity");
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.Case", b =>
+                {
+                    b.HasOne("CommonObjectLibraryCore.UserEntity", "CaseHandler")
+                        .WithMany()
+                        .HasForeignKey("CaseHandlerUserEntityId");
+
+                    b.HasOne("CommonObjectLibraryCore.ClientEntity", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientEntityId");
+
+                    b.HasOne("CommonObjectLibraryCore.CaseStatus", "CurrentStatus")
+                        .WithMany()
+                        .HasForeignKey("CurrentStatusCaseStatusId");
+
+                    b.Navigation("CaseHandler");
+
+                    b.Navigation("Client");
+
+                    b.Navigation("CurrentStatus");
                 });
 
             modelBuilder.Entity("CommonObjectLibraryCore.CaseEntity", b =>
@@ -287,6 +414,15 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasForeignKey("CaseEntityCaseId", "CaseEntityEntityId");
 
                     b.Navigation("DataPointType");
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.ClientEntity", b =>
+                {
+                    b.HasOne("CommonObjectLibraryCore.PostalAddress", "PrincipalAddress")
+                        .WithMany()
+                        .HasForeignKey("PrincipalAddressPostalAddressId");
+
+                    b.Navigation("PrincipalAddress");
                 });
 
             modelBuilder.Entity("CommonObjectLibraryCore.Entity", b =>

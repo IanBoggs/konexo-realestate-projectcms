@@ -8,16 +8,16 @@ namespace CommonObjectLibraryCore.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Cases",
+                name: "CasesStatuses",
                 columns: table => new
                 {
-                    CaseId = table.Column<int>(type: "int", nullable: false)
+                    CaseStatusId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CaseReference = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CaseStatusName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cases", x => x.CaseId);
+                    table.PrimaryKey("PK_CasesStatuses", x => x.CaseStatusId);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,6 +64,41 @@ namespace CommonObjectLibraryCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserEntityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserEntityId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    ClientEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PrincipalAddressPostalAddressId = table.Column<int>(type: "int", nullable: true),
+                    ClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LegalClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShortClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SOSPrefixCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.ClientEntityId);
+                    table.ForeignKey(
+                        name: "FK_Clients_PostalAddresses_PrincipalAddressPostalAddressId",
+                        column: x => x.PrincipalAddressPostalAddressId,
+                        principalTable: "PostalAddresses",
+                        principalColumn: "PostalAddressId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Entities",
                 columns: table => new
                 {
@@ -82,6 +117,40 @@ namespace CommonObjectLibraryCore.Migrations
                         column: x => x.PrincipalAddressPostalAddressId,
                         principalTable: "PostalAddresses",
                         principalColumn: "PostalAddressId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cases",
+                columns: table => new
+                {
+                    CaseId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CaseReference = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CurrentStatusCaseStatusId = table.Column<int>(type: "int", nullable: true),
+                    ClientEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CaseHandlerUserEntityId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cases", x => x.CaseId);
+                    table.ForeignKey(
+                        name: "FK_Cases_CasesStatuses_CurrentStatusCaseStatusId",
+                        column: x => x.CurrentStatusCaseStatusId,
+                        principalTable: "CasesStatuses",
+                        principalColumn: "CaseStatusId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cases_Clients_ClientEntityId",
+                        column: x => x.ClientEntityId,
+                        principalTable: "Clients",
+                        principalColumn: "ClientEntityId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cases_Users_CaseHandlerUserEntityId",
+                        column: x => x.CaseHandlerUserEntityId,
+                        principalTable: "Users",
+                        principalColumn: "UserEntityId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -161,6 +230,18 @@ namespace CommonObjectLibraryCore.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "CasesStatuses",
+                columns: new[] { "CaseStatusId", "CaseStatusName" },
+                values: new object[,]
+                {
+                    { 1, "In Progress" },
+                    { 2, "Aborted" },
+                    { 3, "Completed" },
+                    { 4, "PreCompletion" },
+                    { 5, "PostCompletion" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "DataPointTypes",
                 columns: new[] { "DataPointTypeId", "DataPointName" },
                 values: new object[] { 1, "Reference" });
@@ -171,9 +252,16 @@ namespace CommonObjectLibraryCore.Migrations
                 values: new object[,]
                 {
                     { 1, "Borrower" },
-                    { 2, "Solicitor" },
-                    { 3, "Client" },
-                    { 4, "Case Handler" }
+                    { 2, "Solicitor" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserEntityId", "FullName" },
+                values: new object[,]
+                {
+                    { 1, "Ian Boggs" },
+                    { 2, "Sarah Jenkins" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -207,10 +295,30 @@ namespace CommonObjectLibraryCore.Migrations
                 column: "DataPointTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cases_CaseHandlerUserEntityId",
+                table: "Cases",
+                column: "CaseHandlerUserEntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cases_CaseReference",
                 table: "Cases",
                 column: "CaseReference",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cases_ClientEntityId",
+                table: "Cases",
+                column: "ClientEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cases_CurrentStatusCaseStatusId",
+                table: "Cases",
+                column: "CurrentStatusCaseStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_PrincipalAddressPostalAddressId",
+                table: "Clients",
+                column: "PrincipalAddressPostalAddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Entities_PrincipalAddressPostalAddressId",
@@ -243,6 +351,15 @@ namespace CommonObjectLibraryCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "EntityRoles");
+
+            migrationBuilder.DropTable(
+                name: "CasesStatuses");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "PostalAddresses");
