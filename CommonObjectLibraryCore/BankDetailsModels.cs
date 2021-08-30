@@ -6,12 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommonObjectLibraryCore
 {
-    [Table("CasesStatuses")]
-    [Index(nameof(CaseStatusName), IsUnique = true)]
-    public class CaseStatus
+    [Table("BankDetails")]
+    public class BankDetail
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CaseStatusId { get; set; }
-        public string CaseStatusName { get; set; }
+        public int BankDetailId { get; set; }
+        public string AccountNumber { get; set; }
+        public string SortCode { get; set; }
+        public string BankName { get; set; }
+        public string BranchName { get; set; }
+
+
     }
 }

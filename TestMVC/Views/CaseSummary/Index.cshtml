@@ -8,9 +8,47 @@
     <h1 class="display-4">Case Summary For @Model.CaseReference</h1>
     <p>Here is the case summary for this case</p>
 
-
-    <li>@Html.DisplayNameFor(model => model.CaseReference) - @Model.CaseReference</li>
-    <li>@Model.Client.ClientName</li>
-    <li>@Model.CaseHandler.FullName</li>
+    <table class="table table-striped table-hover">
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CaseReference)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.CaseReference)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CurrentStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.CurrentStatus.CaseStatusName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CaseHandler)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.CaseHandler.FullName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Client.ClientName)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Client.ClientName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.ClientReference)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.ClientReference)
+            </td>
+        </tr>
+    </table>
 
 </div>

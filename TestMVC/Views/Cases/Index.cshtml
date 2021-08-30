@@ -8,11 +8,38 @@
     <h1 class="display-4">Case List</h1>
     <p>There are a total of @Model.Count() cases in the system</p>
 
-    @foreach (var item in Model)
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CaseReference)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Client.ClientName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClientReference)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="CaseSummary" asp-action="Index" asp-route-id="@b.CaseId">@b.CaseReference</a>
 
-    {
-        <li><a asp-controller="CaseSummary" asp-action="Index" asp-route-id="@item.CaseId">@item.CaseReference</a> -
-            @item.Client.ClientName - @item.CaseHandler.FullName
-        </li>
-    }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => b.Client.ClientName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => b.ClientReference)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
 </div>

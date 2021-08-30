@@ -29,10 +29,13 @@ namespace CommonObjectLibraryCore
         {
             modelBuilder.Entity<EntityRole>().HasData(
                 new EntityRole { EntityRoleId = 1, EntityRoleName = "Borrower" },
-                new EntityRole { EntityRoleId = 2, EntityRoleName = "Solicitor" }
+                new EntityRole { EntityRoleId = 2, EntityRoleName = "Solicitor" },
+                new EntityRole { EntityRoleId = 3, EntityRoleName = "Lender" }
                             );
             modelBuilder.Entity<DataPointType>().HasData(
-                new DataPointType { DataPointTypeId = 1, DataPointName = "Reference" }
+                new DataPointType { DataPointTypeId = 1, DataPointName = "Reference" },
+                new DataPointType { DataPointTypeId = 2, DataPointName = "Redemption Amount" },
+                new DataPointType { DataPointTypeId = 3, DataPointName = "Redemption Expiry Date" }
             );
 
             modelBuilder.Entity<CaseStatus>().HasData(
@@ -56,7 +59,7 @@ namespace CommonObjectLibraryCore
         public DbSet<EntityRole> EntityRoles { get; set; }
 
         public DbSet<PostalAddress> PostalAddresses { get; set; }
-        public DbSet<CaseEntityDataPoint> CaseEntityDataPoints { get; set; }
+        public DbSet<EntityDataPoint> CaseEntityDataPoints { get; set; }
         public DbSet<DataPointType> DataPointTypes { get; set; }
         public DbSet<IndividualEntity> People { get; set; }
         public DbSet<CompanyEntity> Companies { get; set; }

@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommonObjectLibraryCore
 {
-
+    /// <summary>
+    /// Class represetning a postal address
+    /// </summary>
+    [Table("PostalAddresses")]
     public class PostalAddress
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

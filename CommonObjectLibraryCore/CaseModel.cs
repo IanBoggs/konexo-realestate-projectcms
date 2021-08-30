@@ -11,6 +11,8 @@ namespace CommonObjectLibraryCore
 
 
     [Index(nameof(CaseReference), IsUnique = true)]
+    [Index(nameof(ClientReference), nameof(ClientEntity.ClientEntityId), IsUnique = true)]
+    [Table("Cases")]
     public class Case
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -19,10 +21,13 @@ namespace CommonObjectLibraryCore
         [DisplayName("Case Reference")]
         public string CaseReference { get; set; }
         [Required]
+        [DisplayName("Current Status")]
         public virtual CaseStatus CurrentStatus { get; set; }
+        [DisplayName("Client Ref")]
         public string ClientReference { get; set; }
         [Required]
         public virtual ClientEntity Client { get; set; }
+        [DisplayName("Case Handler")]
         public virtual UserEntity CaseHandler { get; set; }
         public virtual List<CaseEntity> CaseEntities { get; set; }
 

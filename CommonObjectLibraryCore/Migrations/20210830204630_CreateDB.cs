@@ -13,11 +13,30 @@ namespace CommonObjectLibraryCore.Migrations
                 {
                     CaseStatusId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CaseStatusName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CaseStatusName = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CasesStatuses", x => x.CaseStatusId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactDetails",
+                columns: table => new
+                {
+                    ContactDetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    HomePhone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MobilePhone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkPhone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PrimaryEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecondaryEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkFax = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DXAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactDetails", x => x.ContactDetailId);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,14 +101,21 @@ namespace CommonObjectLibraryCore.Migrations
                 {
                     ClientEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PrincipalAddressPostalAddressId = table.Column<int>(type: "int", nullable: true),
-                    ClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LegalClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ShortClientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SOSPrefixCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    SOSPrefixCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ContactInformationContactDetailId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clients", x => x.ClientEntityId);
+                    table.ForeignKey(
+                        name: "FK_Clients_ContactDetails_ContactInformationContactDetailId",
+                        column: x => x.ContactInformationContactDetailId,
+                        principalTable: "ContactDetails",
+                        principalColumn: "ContactDetailId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Clients_PostalAddresses_PrincipalAddressPostalAddressId",
                         column: x => x.PrincipalAddressPostalAddressId,
@@ -104,14 +130,23 @@ namespace CommonObjectLibraryCore.Migrations
                 {
                     EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PrincipalAddressPostalAddressId = table.Column<int>(type: "int", nullable: true),
+                    ContactInformationContactDetailId = table.Column<int>(type: "int", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CompanyNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Entities", x => x.EntityId);
+                    table.ForeignKey(
+                        name: "FK_Entities_ContactDetails_ContactInformationContactDetailId",
+                        column: x => x.ContactInformationContactDetailId,
+                        principalTable: "ContactDetails",
+                        principalColumn: "ContactDetailId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Entities_PostalAddresses_PrincipalAddressPostalAddressId",
                         column: x => x.PrincipalAddressPostalAddressId,
@@ -128,6 +163,7 @@ namespace CommonObjectLibraryCore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseReference = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CurrentStatusCaseStatusId = table.Column<int>(type: "int", nullable: true),
+                    ClientReference = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ClientEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CaseHandlerUserEntityId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -155,7 +191,7 @@ namespace CommonObjectLibraryCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CaseEntities",
+                name: "CaseEntity_Rel",
                 columns: table => new
                 {
                     CaseId = table.Column<int>(type: "int", nullable: false),
@@ -168,33 +204,33 @@ namespace CommonObjectLibraryCore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CaseEntities", x => new { x.CaseId, x.EntityId });
+                    table.PrimaryKey("PK_CaseEntity_Rel", x => new { x.CaseId, x.EntityId });
                     table.ForeignKey(
-                        name: "FK_CaseEntities_Cases_CaseId",
+                        name: "FK_CaseEntity_Rel_Cases_CaseId",
                         column: x => x.CaseId,
                         principalTable: "Cases",
                         principalColumn: "CaseId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CaseEntities_Entities_CompanyEntityEntityId",
+                        name: "FK_CaseEntity_Rel_Entities_CompanyEntityEntityId",
                         column: x => x.CompanyEntityEntityId,
                         principalTable: "Entities",
                         principalColumn: "EntityId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CaseEntities_Entities_EntityId",
+                        name: "FK_CaseEntity_Rel_Entities_EntityId",
                         column: x => x.EntityId,
                         principalTable: "Entities",
                         principalColumn: "EntityId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CaseEntities_Entities_IndividualEntityEntityId",
+                        name: "FK_CaseEntity_Rel_Entities_IndividualEntityEntityId",
                         column: x => x.IndividualEntityEntityId,
                         principalTable: "Entities",
                         principalColumn: "EntityId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CaseEntities_EntityRoles_EntityRoleId",
+                        name: "FK_CaseEntity_Rel_EntityRoles_EntityRoleId",
                         column: x => x.EntityRoleId,
                         principalTable: "EntityRoles",
                         principalColumn: "EntityRoleId",
@@ -202,10 +238,10 @@ namespace CommonObjectLibraryCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CaseEntityDataPoints",
+                name: "EntityDataPoints",
                 columns: table => new
                 {
-                    CaseEntityDataPointId = table.Column<int>(type: "int", nullable: false)
+                    EntityDataPointId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataPointTypeId = table.Column<int>(type: "int", nullable: false),
                     DataPointValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -214,15 +250,15 @@ namespace CommonObjectLibraryCore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CaseEntityDataPoints", x => x.CaseEntityDataPointId);
+                    table.PrimaryKey("PK_EntityDataPoints", x => x.EntityDataPointId);
                     table.ForeignKey(
-                        name: "FK_CaseEntityDataPoints_CaseEntities_CaseEntityCaseId_CaseEntityEntityId",
+                        name: "FK_EntityDataPoints_CaseEntity_Rel_CaseEntityCaseId_CaseEntityEntityId",
                         columns: x => new { x.CaseEntityCaseId, x.CaseEntityEntityId },
-                        principalTable: "CaseEntities",
+                        principalTable: "CaseEntity_Rel",
                         principalColumns: new[] { "CaseId", "EntityId" },
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CaseEntityDataPoints_DataPointTypes_DataPointTypeId",
+                        name: "FK_EntityDataPoints_DataPointTypes_DataPointTypeId",
                         column: x => x.DataPointTypeId,
                         principalTable: "DataPointTypes",
                         principalColumn: "DataPointTypeId",
@@ -244,7 +280,12 @@ namespace CommonObjectLibraryCore.Migrations
             migrationBuilder.InsertData(
                 table: "DataPointTypes",
                 columns: new[] { "DataPointTypeId", "DataPointName" },
-                values: new object[] { 1, "Reference" });
+                values: new object[,]
+                {
+                    { 1, "Reference" },
+                    { 2, "Redemption Amount" },
+                    { 3, "Redemption Expiry Date" }
+                });
 
             migrationBuilder.InsertData(
                 table: "EntityRoles",
@@ -252,7 +293,8 @@ namespace CommonObjectLibraryCore.Migrations
                 values: new object[,]
                 {
                     { 1, "Borrower" },
-                    { 2, "Solicitor" }
+                    { 2, "Solicitor" },
+                    { 3, "Lender" }
                 });
 
             migrationBuilder.InsertData(
@@ -265,34 +307,24 @@ namespace CommonObjectLibraryCore.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CaseEntities_CompanyEntityEntityId",
-                table: "CaseEntities",
+                name: "IX_CaseEntity_Rel_CompanyEntityEntityId",
+                table: "CaseEntity_Rel",
                 column: "CompanyEntityEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CaseEntities_EntityId",
-                table: "CaseEntities",
+                name: "IX_CaseEntity_Rel_EntityId",
+                table: "CaseEntity_Rel",
                 column: "EntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CaseEntities_EntityRoleId",
-                table: "CaseEntities",
+                name: "IX_CaseEntity_Rel_EntityRoleId",
+                table: "CaseEntity_Rel",
                 column: "EntityRoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CaseEntities_IndividualEntityEntityId",
-                table: "CaseEntities",
+                name: "IX_CaseEntity_Rel_IndividualEntityEntityId",
+                table: "CaseEntity_Rel",
                 column: "IndividualEntityEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CaseEntityDataPoints_CaseEntityCaseId_CaseEntityEntityId",
-                table: "CaseEntityDataPoints",
-                columns: new[] { "CaseEntityCaseId", "CaseEntityEntityId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CaseEntityDataPoints_DataPointTypeId",
-                table: "CaseEntityDataPoints",
-                column: "DataPointTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cases_CaseHandlerUserEntityId",
@@ -311,9 +343,28 @@ namespace CommonObjectLibraryCore.Migrations
                 column: "ClientEntityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cases_ClientReference_ClientEntityId",
+                table: "Cases",
+                columns: new[] { "ClientReference", "ClientEntityId" },
+                unique: true,
+                filter: "[ClientReference] IS NOT NULL AND [ClientEntityId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cases_CurrentStatusCaseStatusId",
                 table: "Cases",
                 column: "CurrentStatusCaseStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CasesStatuses_CaseStatusName",
+                table: "CasesStatuses",
+                column: "CaseStatusName",
+                unique: true,
+                filter: "[CaseStatusName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_ContactInformationContactDetailId",
+                table: "Clients",
+                column: "ContactInformationContactDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clients_PrincipalAddressPostalAddressId",
@@ -321,9 +372,24 @@ namespace CommonObjectLibraryCore.Migrations
                 column: "PrincipalAddressPostalAddressId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Entities_ContactInformationContactDetailId",
+                table: "Entities",
+                column: "ContactInformationContactDetailId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Entities_PrincipalAddressPostalAddressId",
                 table: "Entities",
                 column: "PrincipalAddressPostalAddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EntityDataPoints_CaseEntityCaseId_CaseEntityEntityId",
+                table: "EntityDataPoints",
+                columns: new[] { "CaseEntityCaseId", "CaseEntityEntityId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EntityDataPoints_DataPointTypeId",
+                table: "EntityDataPoints",
+                column: "DataPointTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EntityRoles_EntityRoleName",
@@ -335,10 +401,10 @@ namespace CommonObjectLibraryCore.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CaseEntityDataPoints");
+                name: "EntityDataPoints");
 
             migrationBuilder.DropTable(
-                name: "CaseEntities");
+                name: "CaseEntity_Rel");
 
             migrationBuilder.DropTable(
                 name: "DataPointTypes");
@@ -360,6 +426,9 @@ namespace CommonObjectLibraryCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "ContactDetails");
 
             migrationBuilder.DropTable(
                 name: "PostalAddresses");

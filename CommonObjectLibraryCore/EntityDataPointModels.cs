@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 namespace CommonObjectLibraryCore
 {
 
-    [Table("CaseEntityDataPoints")]
-    public class CaseEntityDataPoint
+    [Table("EntityDataPoints")]
+    public class EntityDataPoint
     {
-        public int CaseEntityDataPointId { get; set; }
+        public int EntityDataPointId { get; set; }
         public int DataPointTypeId { get; set; }
         public virtual DataPointType DataPointType { get; set; }
         public string DataPointValue { get; set; }

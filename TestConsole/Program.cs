@@ -8,6 +8,8 @@ namespace TestConsole
 {
     class Program
     {
+        static Random rnd = new Random();
+
         static void Main(string[] args)
         {
             Console.WriteLine("Please enter the new case reference");
@@ -18,8 +20,9 @@ namespace TestConsole
             var clientRef = Console.ReadLine();
             using (var con = new ProjectContext())
             {
+                int r = rnd.Next(con.Users.Count);
 
-                var caseHandler = con.Users.FirstOrDefault(u => u.FullName == "Ian Boggs");
+                var caseHandler = con.Users[r];
 
                 var initialStatus = con.CaseStatusList.FirstOrDefault(cs => cs.CaseStatusName == "In Progress");
 
