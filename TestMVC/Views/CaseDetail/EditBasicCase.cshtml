@@ -1,0 +1,57 @@
+@using CommonObjectLibraryCore
+@model Case
+@{
+    ViewData["Title"] = $"Edit Case {@Model.CaseReference}";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Edit Case @Model.CaseReference</h1>
+    <p>Select the new case detail below</p>
+    <form method="post">
+        @Html.HiddenFor(model => model.CaseId)
+        <table class="table table-striped table-hover">
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.CaseReference)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.CaseReference)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.CurrentStatus)
+                </td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.CaseHandler)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.CaseHandler.FullName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.Client.ClientName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.Client.ClientName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayNameFor(model => model.ClientReference)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.ClientReference)
+                </td>
+            </tr>
+        </table>
+        <p><button type="submit">Submit</button></p>
+    </form>
+
+</div>
