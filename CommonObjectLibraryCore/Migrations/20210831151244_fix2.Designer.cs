@@ -4,14 +4,16 @@ using CommonObjectLibraryCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CommonObjectLibraryCore.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20210831151244_fix2")]
+    partial class fix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +68,6 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ClientReference")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CurrentStatusId")
@@ -85,7 +86,7 @@ namespace CommonObjectLibraryCore.Migrations
 
                     b.HasIndex("ClientReference", "ClientEntityId")
                         .IsUnique()
-                        .HasFilter("[ClientEntityId] IS NOT NULL");
+                        .HasFilter("[ClientReference] IS NOT NULL AND [ClientEntityId] IS NOT NULL");
 
                     b.ToTable("Cases");
                 });

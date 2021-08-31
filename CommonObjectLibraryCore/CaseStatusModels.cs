@@ -13,5 +13,6 @@ namespace CommonObjectLibraryCore
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CaseStatusId { get; set; }
         public string CaseStatusName { get; set; }
+        public virtual ICollection<Case> Cases { get; set; }
     }
 }

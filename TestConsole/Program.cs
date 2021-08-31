@@ -20,9 +20,9 @@ namespace TestConsole
             var clientRef = Console.ReadLine();
             using (var con = new ProjectContext())
             {
-                int r = rnd.Next(con.Users.Count);
+                int r = rnd.Next(con.Users.Count());
 
-                var caseHandler = con.Users[r];
+                var caseHandler = con.Users.ToList()[r];
 
                 var initialStatus = con.CaseStatusList.FirstOrDefault(cs => cs.CaseStatusName == "In Progress");
 

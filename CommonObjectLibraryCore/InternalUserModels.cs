@@ -12,5 +12,6 @@ namespace CommonObjectLibraryCore
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserEntityId { get; set; }
         public string FullName { get; set; }
+
     }
 }

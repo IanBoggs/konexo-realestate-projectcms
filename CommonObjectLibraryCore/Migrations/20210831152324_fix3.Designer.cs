@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommonObjectLibraryCore.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20210830205336_Updte1")]
-    partial class Updte1
+    [Migration("20210831152324_fix3")]
+    partial class fix3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,7 +57,7 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CaseHandlerUserEntityId")
+                    b.Property<int>("CaseHandlerId")
                         .HasColumnType("int");
 
                     b.Property<string>("CaseReference")
@@ -68,25 +68,26 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ClientReference")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CurrentStatusCaseStatusId")
+                    b.Property<int>("CurrentStatusId")
                         .HasColumnType("int");
 
                     b.HasKey("CaseId");
 
-                    b.HasIndex("CaseHandlerUserEntityId");
+                    b.HasIndex("CaseHandlerId");
 
                     b.HasIndex("CaseReference")
                         .IsUnique();
 
                     b.HasIndex("ClientEntityId");
 
-                    b.HasIndex("CurrentStatusCaseStatusId");
+                    b.HasIndex("CurrentStatusId");
 
                     b.HasIndex("ClientReference", "ClientEntityId")
                         .IsUnique()
-                        .HasFilter("[ClientReference] IS NOT NULL AND [ClientEntityId] IS NOT NULL");
+                        .HasFilter("[ClientEntityId] IS NOT NULL");
 
                     b.ToTable("Cases");
                 });
@@ -468,15 +469,19 @@ namespace CommonObjectLibraryCore.Migrations
                 {
                     b.HasOne("CommonObjectLibraryCore.UserEntity", "CaseHandler")
                         .WithMany()
-                        .HasForeignKey("CaseHandlerUserEntityId");
+                        .HasForeignKey("CaseHandlerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CommonObjectLibraryCore.ClientEntity", "Client")
                         .WithMany()
                         .HasForeignKey("ClientEntityId");
 
                     b.HasOne("CommonObjectLibraryCore.CaseStatus", "CurrentStatus")
-                        .WithMany()
-                        .HasForeignKey("CurrentStatusCaseStatusId");
+                        .WithMany("Cases")
+                        .HasForeignKey("CurrentStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CaseHandler");
 
@@ -587,6 +592,11 @@ namespace CommonObjectLibraryCore.Migrations
             modelBuilder.Entity("CommonObjectLibraryCore.CaseEntity", b =>
                 {
                     b.Navigation("CaseEntityDataPointList");
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.CaseStatus", b =>
+                {
+                    b.Navigation("Cases");
                 });
 
             modelBuilder.Entity("CommonObjectLibraryCore.Entity", b =>

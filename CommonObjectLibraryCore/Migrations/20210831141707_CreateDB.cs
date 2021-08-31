@@ -125,44 +125,13 @@ namespace CommonObjectLibraryCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Entities",
-                columns: table => new
-                {
-                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PrincipalAddressPostalAddressId = table.Column<int>(type: "int", nullable: true),
-                    ContactInformationContactDetailId = table.Column<int>(type: "int", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Entities", x => x.EntityId);
-                    table.ForeignKey(
-                        name: "FK_Entities_ContactDetails_ContactInformationContactDetailId",
-                        column: x => x.ContactInformationContactDetailId,
-                        principalTable: "ContactDetails",
-                        principalColumn: "ContactDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Entities_PostalAddresses_PrincipalAddressPostalAddressId",
-                        column: x => x.PrincipalAddressPostalAddressId,
-                        principalTable: "PostalAddresses",
-                        principalColumn: "PostalAddressId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Cases",
                 columns: table => new
                 {
                     CaseId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CaseReference = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CurrentStatusCaseStatusId = table.Column<int>(type: "int", nullable: true),
+                    CurrentStatusId = table.Column<int>(type: "int", nullable: false),
                     ClientReference = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ClientEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CaseHandlerUserEntityId = table.Column<int>(type: "int", nullable: true)
@@ -171,11 +140,11 @@ namespace CommonObjectLibraryCore.Migrations
                 {
                     table.PrimaryKey("PK_Cases", x => x.CaseId);
                     table.ForeignKey(
-                        name: "FK_Cases_CasesStatuses_CurrentStatusCaseStatusId",
-                        column: x => x.CurrentStatusCaseStatusId,
+                        name: "FK_Cases_CasesStatuses_CurrentStatusId",
+                        column: x => x.CurrentStatusId,
                         principalTable: "CasesStatuses",
                         principalColumn: "CaseStatusId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Cases_Clients_ClientEntityId",
                         column: x => x.ClientEntityId,
@@ -199,6 +168,7 @@ namespace CommonObjectLibraryCore.Migrations
                     CaseEntityId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EntityRoleId = table.Column<int>(type: "int", nullable: false),
+                    BankDetailId = table.Column<int>(type: "int", nullable: false),
                     CompanyEntityEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IndividualEntityEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -211,24 +181,6 @@ namespace CommonObjectLibraryCore.Migrations
                         principalTable: "Cases",
                         principalColumn: "CaseId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CaseEntity_Rel_Entities_CompanyEntityEntityId",
-                        column: x => x.CompanyEntityEntityId,
-                        principalTable: "Entities",
-                        principalColumn: "EntityId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CaseEntity_Rel_Entities_EntityId",
-                        column: x => x.EntityId,
-                        principalTable: "Entities",
-                        principalColumn: "EntityId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CaseEntity_Rel_Entities_IndividualEntityEntityId",
-                        column: x => x.IndividualEntityEntityId,
-                        principalTable: "Entities",
-                        principalColumn: "EntityId",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CaseEntity_Rel_EntityRoles_EntityRoleId",
                         column: x => x.EntityRoleId,
@@ -263,6 +215,61 @@ namespace CommonObjectLibraryCore.Migrations
                         principalTable: "DataPointTypes",
                         principalColumn: "DataPointTypeId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Entities",
+                columns: table => new
+                {
+                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PrincipalAddressPostalAddressId = table.Column<int>(type: "int", nullable: true),
+                    ContactInformationContactDetailId = table.Column<int>(type: "int", nullable: true),
+                    DefaultBankDetailsBankDetailId = table.Column<int>(type: "int", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CompanyNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Entities", x => x.EntityId);
+                    table.ForeignKey(
+                        name: "FK_Entities_ContactDetails_ContactInformationContactDetailId",
+                        column: x => x.ContactInformationContactDetailId,
+                        principalTable: "ContactDetails",
+                        principalColumn: "ContactDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Entities_PostalAddresses_PrincipalAddressPostalAddressId",
+                        column: x => x.PrincipalAddressPostalAddressId,
+                        principalTable: "PostalAddresses",
+                        principalColumn: "PostalAddressId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BankDetails",
+                columns: table => new
+                {
+                    BankDetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SortCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BranchName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BankDetails", x => x.BankDetailId);
+                    table.ForeignKey(
+                        name: "FK_BankDetails_Entities_EntityId",
+                        column: x => x.EntityId,
+                        principalTable: "Entities",
+                        principalColumn: "EntityId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -305,6 +312,16 @@ namespace CommonObjectLibraryCore.Migrations
                     { 1, "Ian Boggs" },
                     { 2, "Sarah Jenkins" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BankDetails_EntityId",
+                table: "BankDetails",
+                column: "EntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CaseEntity_Rel_BankDetailId",
+                table: "CaseEntity_Rel",
+                column: "BankDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CaseEntity_Rel_CompanyEntityEntityId",
@@ -350,9 +367,9 @@ namespace CommonObjectLibraryCore.Migrations
                 filter: "[ClientReference] IS NOT NULL AND [ClientEntityId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cases_CurrentStatusCaseStatusId",
+                name: "IX_Cases_CurrentStatusId",
                 table: "Cases",
-                column: "CurrentStatusCaseStatusId");
+                column: "CurrentStatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CasesStatuses_CaseStatusName",
@@ -377,6 +394,11 @@ namespace CommonObjectLibraryCore.Migrations
                 column: "ContactInformationContactDetailId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Entities_DefaultBankDetailsBankDetailId",
+                table: "Entities",
+                column: "DefaultBankDetailsBankDetailId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Entities_PrincipalAddressPostalAddressId",
                 table: "Entities",
                 column: "PrincipalAddressPostalAddressId");
@@ -396,10 +418,54 @@ namespace CommonObjectLibraryCore.Migrations
                 table: "EntityRoles",
                 column: "EntityRoleName",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CaseEntity_Rel_BankDetails_BankDetailId",
+                table: "CaseEntity_Rel",
+                column: "BankDetailId",
+                principalTable: "BankDetails",
+                principalColumn: "BankDetailId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CaseEntity_Rel_Entities_CompanyEntityEntityId",
+                table: "CaseEntity_Rel",
+                column: "CompanyEntityEntityId",
+                principalTable: "Entities",
+                principalColumn: "EntityId",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CaseEntity_Rel_Entities_EntityId",
+                table: "CaseEntity_Rel",
+                column: "EntityId",
+                principalTable: "Entities",
+                principalColumn: "EntityId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CaseEntity_Rel_Entities_IndividualEntityEntityId",
+                table: "CaseEntity_Rel",
+                column: "IndividualEntityEntityId",
+                principalTable: "Entities",
+                principalColumn: "EntityId",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Entities_BankDetails_DefaultBankDetailsBankDetailId",
+                table: "Entities",
+                column: "DefaultBankDetailsBankDetailId",
+                principalTable: "BankDetails",
+                principalColumn: "BankDetailId",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_BankDetails_Entities_EntityId",
+                table: "BankDetails");
+
             migrationBuilder.DropTable(
                 name: "EntityDataPoints");
 
@@ -413,9 +479,6 @@ namespace CommonObjectLibraryCore.Migrations
                 name: "Cases");
 
             migrationBuilder.DropTable(
-                name: "Entities");
-
-            migrationBuilder.DropTable(
                 name: "EntityRoles");
 
             migrationBuilder.DropTable(
@@ -426,6 +489,12 @@ namespace CommonObjectLibraryCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Entities");
+
+            migrationBuilder.DropTable(
+                name: "BankDetails");
 
             migrationBuilder.DropTable(
                 name: "ContactDetails");

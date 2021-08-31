@@ -15,6 +15,7 @@ namespace TestMVC.Models
     public class EditCase
     {
         public Case CaseToEdit { get; set; }
-        public List<SelectListItem> PotentialStatusList { get; set; }
+        public IEnumerable<SelectListItem> PotentialStatusList { get; set; }
+        public IEnumerable<SelectListItem> CaseHandlerList { get; set; }
     }
 }

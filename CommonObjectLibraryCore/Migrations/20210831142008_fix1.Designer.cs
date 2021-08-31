@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommonObjectLibraryCore.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20210830204630_CreateDB")]
-    partial class CreateDB
+    [Migration("20210831142008_fix1")]
+    partial class fix1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,35 @@ namespace CommonObjectLibraryCore.Migrations
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("CommonObjectLibraryCore.BankDetail", b =>
+                {
+                    b.Property<int>("BankDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("EntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SortCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BankDetailId");
+
+                    b.HasIndex("EntityId");
+
+                    b.ToTable("BankDetails");
+                });
+
             modelBuilder.Entity("CommonObjectLibraryCore.Case", b =>
                 {
                     b.Property<int>("CaseId")
@@ -28,7 +57,7 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CaseHandlerUserEntityId")
+                    b.Property<int>("CaseHandlerId")
                         .HasColumnType("int");
 
                     b.Property<string>("CaseReference")
@@ -41,19 +70,19 @@ namespace CommonObjectLibraryCore.Migrations
                     b.Property<string>("ClientReference")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CurrentStatusCaseStatusId")
+                    b.Property<int>("CurrentStatusId")
                         .HasColumnType("int");
 
                     b.HasKey("CaseId");
 
-                    b.HasIndex("CaseHandlerUserEntityId");
+                    b.HasIndex("CaseHandlerId");
 
                     b.HasIndex("CaseReference")
                         .IsUnique();
 
                     b.HasIndex("ClientEntityId");
 
-                    b.HasIndex("CurrentStatusCaseStatusId");
+                    b.HasIndex("CurrentStatusId");
 
                     b.HasIndex("ClientReference", "ClientEntityId")
                         .IsUnique()
@@ -70,6 +99,9 @@ namespace CommonObjectLibraryCore.Migrations
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("BankDetailId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CaseEntityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -85,6 +117,8 @@ namespace CommonObjectLibraryCore.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CaseId", "EntityId");
+
+                    b.HasIndex("BankDetailId");
 
                     b.HasIndex("CompanyEntityEntityId");
 
@@ -251,6 +285,9 @@ namespace CommonObjectLibraryCore.Migrations
                     b.Property<int?>("ContactInformationContactDetailId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DefaultBankDetailsBankDetailId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -261,6 +298,8 @@ namespace CommonObjectLibraryCore.Migrations
                     b.HasKey("EntityId");
 
                     b.HasIndex("ContactInformationContactDetailId");
+
+                    b.HasIndex("DefaultBankDetailsBankDetailId");
 
                     b.HasIndex("PrincipalAddressPostalAddressId");
 
@@ -418,19 +457,30 @@ namespace CommonObjectLibraryCore.Migrations
                     b.HasDiscriminator().HasValue("IndividualEntity");
                 });
 
+            modelBuilder.Entity("CommonObjectLibraryCore.BankDetail", b =>
+                {
+                    b.HasOne("CommonObjectLibraryCore.Entity", null)
+                        .WithMany("AlternativeBankDetails")
+                        .HasForeignKey("EntityId");
+                });
+
             modelBuilder.Entity("CommonObjectLibraryCore.Case", b =>
                 {
                     b.HasOne("CommonObjectLibraryCore.UserEntity", "CaseHandler")
                         .WithMany()
-                        .HasForeignKey("CaseHandlerUserEntityId");
+                        .HasForeignKey("CaseHandlerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CommonObjectLibraryCore.ClientEntity", "Client")
                         .WithMany()
                         .HasForeignKey("ClientEntityId");
 
                     b.HasOne("CommonObjectLibraryCore.CaseStatus", "CurrentStatus")
-                        .WithMany()
-                        .HasForeignKey("CurrentStatusCaseStatusId");
+                        .WithMany("Cases")
+                        .HasForeignKey("CurrentStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CaseHandler");
 
@@ -441,6 +491,12 @@ namespace CommonObjectLibraryCore.Migrations
 
             modelBuilder.Entity("CommonObjectLibraryCore.CaseEntity", b =>
                 {
+                    b.HasOne("CommonObjectLibraryCore.BankDetail", "BankDetail")
+                        .WithMany()
+                        .HasForeignKey("BankDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CommonObjectLibraryCore.Case", "Case")
                         .WithMany("CaseEntities")
                         .HasForeignKey("CaseId")
@@ -466,6 +522,8 @@ namespace CommonObjectLibraryCore.Migrations
                     b.HasOne("CommonObjectLibraryCore.IndividualEntity", null)
                         .WithMany("CaseEntities")
                         .HasForeignKey("IndividualEntityEntityId");
+
+                    b.Navigation("BankDetail");
 
                     b.Navigation("Case");
 
@@ -495,11 +553,17 @@ namespace CommonObjectLibraryCore.Migrations
                         .WithMany()
                         .HasForeignKey("ContactInformationContactDetailId");
 
+                    b.HasOne("CommonObjectLibraryCore.BankDetail", "DefaultBankDetails")
+                        .WithMany()
+                        .HasForeignKey("DefaultBankDetailsBankDetailId");
+
                     b.HasOne("CommonObjectLibraryCore.PostalAddress", "PrincipalAddress")
                         .WithMany()
                         .HasForeignKey("PrincipalAddressPostalAddressId");
 
                     b.Navigation("ContactInformation");
+
+                    b.Navigation("DefaultBankDetails");
 
                     b.Navigation("PrincipalAddress");
                 });
@@ -527,6 +591,16 @@ namespace CommonObjectLibraryCore.Migrations
             modelBuilder.Entity("CommonObjectLibraryCore.CaseEntity", b =>
                 {
                     b.Navigation("CaseEntityDataPointList");
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.CaseStatus", b =>
+                {
+                    b.Navigation("Cases");
+                });
+
+            modelBuilder.Entity("CommonObjectLibraryCore.Entity", b =>
+                {
+                    b.Navigation("AlternativeBankDetails");
                 });
 
             modelBuilder.Entity("CommonObjectLibraryCore.CompanyEntity", b =>

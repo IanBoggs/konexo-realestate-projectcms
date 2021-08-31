@@ -24,8 +24,7 @@ namespace TestMVC.Controllers
 
         public IActionResult Index()
         {
-            var allCases = _context.Cases.Where(c => c.CaseHandler.FullName == loggedUser)
-                .ToList();
+            var allCases = _context.Cases.ToList();
 
             return View(allCases);
         }
