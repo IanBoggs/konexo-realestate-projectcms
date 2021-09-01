@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TestMVC.Models;
 using CommonObjectLibraryCore;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 
 namespace TestMVC.Controllers
 {
@@ -22,9 +24,12 @@ namespace TestMVC.Controllers
 
         public IActionResult Index()
         {
-            var test = _context.Cases.Count();
+
             return View();
         }
+
+
+
 
         public IActionResult Privacy()
         {

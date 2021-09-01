@@ -2,7 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
+@section Scripts {
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
 <div class="text-center">
     <h1 class="display-4">Welcome To Projects Case Management System</h1>
-    <p>Click Here To View Cases @Html.ActionLink("Here","Index","Cases")</p>
+    <p>Click @Html.ActionLink("Here","Index","Cases") To View Cases</p>
+    <p>Click @Html.ActionLink("Here","CaseSearch","Cases") to perform a case search
+    </p>
+
+
+
 </div>

@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using TestMVC.Models;
 using CommonObjectLibraryCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 
 namespace TestMVC.Controllers
 {
@@ -21,6 +23,21 @@ namespace TestMVC.Controllers
         {
             _context = context;
         }
+
+        public IActionResult CaseSearch()
+        {
+            var searchParameters = new CaseSearchParameters();
+            return View(searchParameters);
+        }
+
+        [HttpPost]
+        public PartialViewResult CaseSearchResult(CaseSearchParameters searchParams)
+        {
+            var caseList = _context.Cases.Include(c => c.Client).AsNoTracking()
+                    .Where(c => c.CaseReference.Contains(searchParams.SearchTerm)).ToList();
+            return PartialView("_CaseSearchResult", caseList);
+        }
+
 
         public IActionResult Index()
         {

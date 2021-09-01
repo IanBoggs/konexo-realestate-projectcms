@@ -1,0 +1,49 @@
+@model CaseSearchParameters
+@{
+    ViewData["Title"] = "Case Search";
+}
+
+@section Scripts {
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<div>
+    <h1 class="display-2">Case Finder</h1>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <form id="SearchForm">
+                Search Type :@Html.DropDownListFor(m => m.SearchType, Html.GetEnumSelectList(Model.SearchType.GetType())
+                ,"Select Search Type",new { @class ="form-control" })
+                Search Term : @Html.EditorFor(x => x.SearchTerm)
+                Exact Match : @Html.EditorFor(model => model.ExactMatch)
+                <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
+            </form>
+        </div>
+    </div>
+    <div id="resultArea">
+    </div>
+</div>
+<script>
+
+    $('#btnSearch').on('click', function (e) {
+        var formData = $('#SearchForm').serialize()
+        GetSearchResult(formData);
+    });
+
+    function GetSearchResult(filters) {
+        $.ajax({
+            url: '/Cases/CaseSearchResult',
+            type: 'POST',
+            cache: false,
+            async: true,
+            dataType: "html",
+            data: filters
+        })
+            .done(function (result) {
+                $('#resultArea').html(result);
+            }).fail(function (xhr) {
+                console.log('error : ' + xhr.status + ' - '
+                    + xhr.statusText + ' - ' + xhr.responseText);
+            });
+    }</script>
