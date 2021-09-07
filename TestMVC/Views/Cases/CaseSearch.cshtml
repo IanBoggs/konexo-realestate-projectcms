@@ -13,7 +13,8 @@
     <div class="form-row">
         <div class="form-group col-md-12">
             <form id="SearchForm">
-                Search Type :@Html.DropDownListFor(m => m.SearchType, Html.GetEnumSelectList(Model.SearchType.GetType())
+                Search Type :@Html.DropDownListFor(m => m.SearchType,
+                Model.SearchType.ToSelectList()
                 ,"Select Search Type",new { @class ="form-control" })
                 Search Term : @Html.EditorFor(x => x.SearchTerm)
                 Exact Match : @Html.EditorFor(model => model.ExactMatch)

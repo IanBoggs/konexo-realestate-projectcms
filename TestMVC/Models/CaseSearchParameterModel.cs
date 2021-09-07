@@ -9,13 +9,16 @@ using TestMVC.Models;
 using CommonObjectLibraryCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TestMVC;
 
 namespace TestMVC.Models
 {
 
     public enum SearchTypes
     {
+        [EnumDisplayName(DisplayName = "Case Reference")]
         CaseReference,
+        [EnumDisplayName(DisplayName = "Client Reference")]
         ClientReference
     }
 

@@ -27,6 +27,7 @@ namespace TestMVC.Controllers
         public IActionResult CaseSearch()
         {
             var searchParameters = new CaseSearchParameters();
+            searchParameters.SearchType = SearchTypes.ClientReference;
             return View(searchParameters);
         }
 
