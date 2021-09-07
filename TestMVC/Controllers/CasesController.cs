@@ -33,7 +33,8 @@ namespace TestMVC.Controllers
         [HttpPost]
         public PartialViewResult CaseSearchResult(CaseSearchParameters searchParams)
         {
-            var filter = CommonFunctions.CreateEqualsFilter<Case, string>("ClientReference", searchParams.SearchTerm.ToLower());
+            var columnName = Enum.GetName(typeof(SearchTypes), searchParams.SearchType);
+            var filter = CommonFunctions.CreateFilter<Case, string>(columnName, searchParams.SearchTerm.ToLower(), searchParams.ExactMatch);
 
             var caseList = _context.Cases.Include(c => c.Client).AsNoTracking().Where(filter).ToList();
 
