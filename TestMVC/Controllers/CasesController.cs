@@ -33,8 +33,10 @@ namespace TestMVC.Controllers
         [HttpPost]
         public PartialViewResult CaseSearchResult(CaseSearchParameters searchParams)
         {
-            var caseList = _context.Cases.Include(c => c.Client).AsNoTracking()
-                    .Where(c => c.CaseReference.Contains(searchParams.SearchTerm)).ToList();
+            var filter = CommonFunctions.CreateEqualsFilter<Case, string>("ClientReference", searchParams.SearchTerm.ToLower());
+
+            var caseList = _context.Cases.Include(c => c.Client).AsNoTracking().Where(filter).ToList();
+
             return PartialView("_CaseSearchResult", caseList);
         }
 
