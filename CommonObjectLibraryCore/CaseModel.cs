@@ -25,11 +25,13 @@ namespace CommonObjectLibraryCore
         public virtual CaseStatus CurrentStatus { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a case status")]
         public int CurrentStatusId { get; set; }
-        [DisplayName("Client Ref")]
+        [DisplayName("Client Reference")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "A Client Reference Is Required")]
         public string ClientReference { get; set; }
         [Required]
         public virtual ClientEntity Client { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a cient")]
+        public int ClientId { get; set; }
         [DisplayName("Case Handler")]
         public virtual UserEntity CaseHandler { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a case handler")]

@@ -30,6 +30,20 @@ namespace TestMVC.Controllers
 
             return View(caseToView);
         }
+        public IActionResult AddCase()
+        {
+            var newCase = new Case();
+            ViewBag.ClientId = new SelectList(_context.Clients.AsNoTracking().ToList(), "ClientEntityId", "ClientName");
+            newCase.CaseReference = "PENDING";
+            return View(newCase);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddCase(Case newCase)
+        {
+            throw new NotImplementedException();
+        }
 
         public IActionResult EditBasicCase(int id)
         {

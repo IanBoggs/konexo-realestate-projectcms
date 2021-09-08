@@ -1,0 +1,32 @@
+@using CommonObjectLibraryCore
+@using TestMVC.Models
+@model Case
+@{
+    ViewData["Title"] = $"Add New Case";
+}
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<div>
+    <h1 class="display-6">Create New Case </h1>
+
+    <form id="NewCaseForm">
+
+        <div class="form-group row">
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.Client.ClientName, new {htmlAttributes = new { @class ="col-sm-2 col-form-label" }})<br>
+                @Html.DropDownListFor(model => model.Client.ClientName,
+                new SelectList(ViewBag.ClientId,"Value","Text"),"-Select Client-", new { @class ="custom-select custom-select-sm" })
+                <span asp-validation-for="@Model.ClientId" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.ClientReference, new {htmlAttributes = new { @class ="col-sm-2 col-form-label" }})
+                @Html.EditorFor(model => model.ClientReference,new {htmlAttributes = new { placeholder = "Client Reference",@class ="form-control form-control-sm" }})
+                <span asp-validation-for="@Model.ClientReference" class="text-danger"></span>
+            </div>
+        </div>
+    </form>
+
+
+</div>
