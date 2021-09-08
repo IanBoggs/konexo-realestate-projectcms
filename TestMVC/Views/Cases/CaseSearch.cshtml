@@ -8,20 +8,28 @@
 }
 
 <div>
-    <h1 class="display-2">Case Finder</h1>
+    <h1 class="display-6">Case Finder</h1>
 
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <form id="SearchForm">
-                Search Type :@Html.DropDownListFor(m => m.SearchType,
-                Model.SearchType.ToSelectList()
-                ,"Select Search Type",new { @class ="form-control" })
-                Search Term : @Html.EditorFor(x => x.SearchTerm)
-                Exact Match : @Html.EditorFor(model => model.ExactMatch)
-                <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
-            </form>
-        </div>
+
+    <div class="form-group">
+        <form id="SearchForm" class="form-inline">
+            
+            @Html.DropDownListFor(m => m.SearchType,
+            Model.SearchType.ToSelectList()
+            ,"Select Type Of Search",new { @id="searchFormSearchType", @class ="form-control mb-2 mr-sm-2 form-control-sm" })
+            <div class="input-group mb-2 mr-sm-2">
+                
+                @Html.EditorFor(x => x.SearchTerm,new { @id="searchFormSearchTerm",@class ="form-control form-control-sm" })
+            </div>
+            <div class="form-check mb-2 mr-sm-2">
+                @Html.EditorFor(model => model.ExactMatch,new { @id="searchFormExactMatch", @class ="form-check-input form-control-sm" })
+                <label class="form-check-label" for="searchFormExactMatch">&nbsp;Exact Match ?</label>
+            </div>
+            
+            <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
+        </form>
     </div>
+
     <div id="resultArea">
     </div>
 </div>
