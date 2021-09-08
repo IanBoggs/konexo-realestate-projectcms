@@ -19,7 +19,7 @@
             ,"Select Type Of Search",new { @id="searchFormSearchType", @class ="form-control mb-2 mr-sm-2 form-control-sm" })
             <div class="input-group mb-2 mr-sm-2">
                 
-                @Html.EditorFor(x => x.SearchTerm,new { @id="searchFormSearchTerm",@class ="form-control form-control-sm" })
+                @Html.EditorFor(x => x.SearchTerm,new {htmlAttributes = new { @id="searchFormSearchTerm",@class ="form-control form-control-sm",placeholder = "Enter search term" }})
             </div>
             <div class="form-check mb-2 mr-sm-2">
                 @Html.EditorFor(model => model.ExactMatch,new { @id="searchFormExactMatch", @class ="form-check-input form-control-sm" })
